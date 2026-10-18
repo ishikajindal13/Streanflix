@@ -1,8 +1,10 @@
 const Movie = require('./models/Movie')
+const User = require('./models/User')
+
 const express = require('express')
 const cors = require('cors')
 const bcrypt = require('bcryptjs')
-const User = require('./models/User')
+const jwt = require('jsonwebtoken')
 
 require('dotenv').config()
 
@@ -10,6 +12,7 @@ const connectDB = require('./db')
 
 const app = express()
 app.use(cors())
+app.use(express.json())
 const PORT = 5000
 
 // API endpoint
@@ -43,7 +46,6 @@ app.get('/api/movies/:id', async (req, res) => {
 })
 
 
-app.use(express.json())
 
 app.post('/api/movies', async (req, res) => {
   try {
@@ -190,8 +192,16 @@ app.post('/api/auth/login', async (req, res) => {
     }
 
     // Return safe user information
+
+
+const token = jwt.sign(
+  { userId: user._id },
+  process.env.JWT_SECRET,
+  { expiresIn: '1h' }
+)
     res.json({
       message: 'Login successful',
+       token,
       user: {
         id: user._id,
         email: user.email,

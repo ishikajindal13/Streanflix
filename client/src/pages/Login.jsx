@@ -1,4 +1,4 @@
-
+import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 
 function Login() {
@@ -6,6 +6,7 @@ function Login() {
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -30,7 +31,14 @@ function Login() {
         throw new Error(data.message || 'Login failed')
       }
 
-      setMessage('Login successful! Welcome to StreamFlix.')
+localStorage.setItem('token', data.token)
+
+localStorage.setItem(
+  'user',
+  JSON.stringify(data.user)
+)
+
+navigate('/')
     } catch (error) {
       setMessage(error.message || 'Unable to connect to server')
     } finally {
