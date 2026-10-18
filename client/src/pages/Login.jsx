@@ -32,11 +32,26 @@ function Login() {
       }
 
 localStorage.setItem('token', data.token)
+localStorage.setItem('user', JSON.stringify(data.user))
 
-localStorage.setItem(
-  'user',
-  JSON.stringify(data.user)
+const verifyResponse = await fetch(
+  'http://localhost:5000/api/auth/me',
+  {
+    headers: {
+      Authorization: `Bearer ${data.token}`,
+    },
+  }
 )
+
+if (!verifyResponse.ok) {
+  localStorage.removeItem('token')
+  localStorage.removeItem('user')
+  throw new Error('Authentication verification failed')
+}
+
+const verifiedUser = await verifyResponse.json()
+
+console.log('Authenticated user:', verifiedUser)
 
 navigate('/')
     } catch (error) {
