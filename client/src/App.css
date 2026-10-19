@@ -5,6 +5,7 @@
   color: white;
 }
 
+/* Navbar */
 .navbar {
   display: flex;
   align-items: center;
@@ -33,6 +34,7 @@
   color: #e50914;
 }
 
+/* Buttons */
 button {
   cursor: pointer;
   border: none;
@@ -47,6 +49,7 @@ button {
   color: white;
 }
 
+/* Hero section */
 .hero {
   padding: 100px 5% 80px;
   background:
@@ -84,25 +87,63 @@ button {
   color: white;
 }
 
-.movies-section {
-  padding: 10px 5% 50px;
+/* Search */
+.search-container {
+  padding: 20px 5%;
 }
 
+.search-container input {
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid #555;
+  border-radius: 5px;
+  background: #222;
+  color: white;
+  font-size: 16px;
+}
+
+.search-container input:focus {
+  outline: 2px solid #e50914;
+}
+
+/* Movies section */
+.movies-section {
+  padding: 20px 40px 50px;
+  color: white;
+  background: #141414;
+}
+
+.movies-section h2 {
+  margin: 0 0 16px;
+}
+
+/* Horizontal movie row */
 .movie-list {
   display: flex;
+  flex-wrap: nowrap;
   gap: 16px;
   overflow-x: auto;
-  padding: 10px 0 20px;
+  overflow-y: hidden;
+  padding: 12px 4px 20px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 
+.movie-list::-webkit-scrollbar {
+  display: none;
+}
 
-.movie-card {
-  min-width: 180px;
+/* Movie cards */
+.movie-list .movie-card {
+  flex: 0 0 180px;
+  min-width: 0;
   max-width: 180px;
   overflow: hidden;
   border-radius: 8px;
   background: #242424;
-  transition: transform 0.2s;
+  transition: transform 0.2s ease;
 }
 
 .movie-card img {
@@ -121,83 +162,7 @@ button {
   transform: scale(1.05);
 }
 
-
-@media (max-width: 600px) {
-  .navbar {
-    flex-wrap: wrap;
-    gap: 14px;
-  }
-
-  .nav-links {
-    gap: 12px;
-    font-size: 14px;
-  }
-
-  .hero {
-    padding-top: 60px;
-  }
-
-  .movie-card {
-    min-width: 160px;
-  }
-}
-
-
-.search-container {
-  padding: 20px 5%;
-}
-
-.search-container input {
-  width: 100%;
-  max-width: 400px;
-  padding: 12px 14px;
-  border: 1px solid #555;
-  border-radius: 5px;
-  background: #222;
-  color: white;
-  font-size: 16px;
-}
-
-.search-container input:focus {
-  outline: 2px solid #e50914;
-}
-
-
-.login-page {
-  min-height: 100vh;
-  background: #141414;
-  color: white;
-  padding: 60px 20px;
-  text-align: center;
-}
-
-.login-page h1 {
-  color: #e50914;
-  margin-bottom: 40px;
-}
-
-.login-page form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  max-width: 350px;
-  margin: 25px auto;
-}
-
-.login-page input {
-  padding: 14px;
-  background: #333;
-  color: white;
-  border: 1px solid #555;
-  border-radius: 4px;
-}
-
-.login-page button {
-  background: #e50914;
-  color: white;
-}
-
-
+/* Login page */
 .login-page {
   max-width: 380px;
   margin: 80px auto;
@@ -205,9 +170,11 @@ button {
   background: #181818;
   border-radius: 10px;
   color: white;
+  text-align: center;
 }
 
 .login-page h1 {
+  color: #e50914;
   margin-bottom: 24px;
 }
 
@@ -215,14 +182,24 @@ button {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  max-width: 350px;
+  margin: 25px auto;
 }
 
 .login-page input,
 .login-page button {
+  box-sizing: border-box;
+  width: 100%;
   padding: 12px;
   border: none;
   border-radius: 5px;
   font-size: 16px;
+}
+
+.login-page input {
+  background: #333;
+  color: white;
+  border: 1px solid #555;
 }
 
 .login-page button {
@@ -234,4 +211,65 @@ button {
 .login-page button:disabled {
   opacity: 0.7;
   cursor: wait;
+}
+
+/* Mobile responsive styles */
+@media (max-width: 600px) {
+  .navbar {
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 16px 5%;
+  }
+
+  .logo {
+    font-size: 24px;
+  }
+
+  .nav-links {
+    gap: 12px;
+    font-size: 14px;
+  }
+
+  .hero {
+    padding: 60px 5% 50px;
+  }
+
+  .tagline {
+    letter-spacing: 2px;
+    font-size: 12px;
+  }
+
+  .hero-buttons {
+    flex-wrap: wrap;
+  }
+
+  .movies-section {
+    padding: 16px;
+  }
+
+  .movie-list {
+    flex-wrap: nowrap;
+    gap: 12px;
+  }
+
+  .movie-list .movie-card {
+    flex: 0 0 140px;
+    min-width: 0;
+    max-width: 140px;
+  }
+
+  .movie-card img {
+    height: 210px;
+  }
+
+  .login-page {
+    box-sizing: border-box;
+    width: calc(100% - 32px);
+    margin: 40px auto;
+    padding: 24px;
+  }
+
+  .login-page form {
+    width: 100%;
+  }
 }
