@@ -75,6 +75,7 @@ useEffect(() => {
 }, [token, logout])
   
 useEffect(() => {
+  let cancelled = false
   const checkAuth = async () => {
       setLoading(true)
     if (!token) {
@@ -85,6 +86,7 @@ useEffect(() => {
 
     try {
       const response = await fetch(
+        
         'http://localhost:5000/api/auth/me',
         {
           headers: {
@@ -92,12 +94,13 @@ useEffect(() => {
           },
         }
       )
-
+       if (cancelled) return
       if (!response.ok) {
         throw new Error('Session is invalid')
       }
 
       const data = await response.json()
+      if (cancelled) return
 
       setUser(data.user)
       localStorage.setItem('user', JSON.stringify(data.user))
@@ -109,6 +112,9 @@ useEffect(() => {
   }
 
   checkAuth()
+  return () => {
+  cancelled = true
+}
 }, [token,logout])
 
 
