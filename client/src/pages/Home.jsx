@@ -1,7 +1,8 @@
 import { useEffect,useState } from 'react'
 import '../App.css'
 import MovieCard from '../components/MovieCard'
-
+import { Link } from 'react-router-dom'
+import LogoutButton from '../components/LogoutButton'
 
 
 function App() {
@@ -33,13 +34,19 @@ function App() {
       <nav className="navbar">
         <h1 className="logo">STREAMFLIX</h1>
 
-        <div className="nav-links">
-          <a href="#">Home</a>
-          <a href="#">Movies</a>
-          <a href="#">My List</a>
-        </div>
+<div className="nav-links">
+  <Link to="/">Home</Link>
+  <Link to="/">Movies</Link>
+  <Link to="/my-list">My List</Link>
+</div>
 
-        <button className="login-btn">Sign In</button>
+{localStorage.getItem('token') ? (
+  <LogoutButton />
+) : (
+  <Link to="/login" className="login-btn">
+    Sign In
+  </Link>
+)}
       </nav>
 
       <main className="hero">
