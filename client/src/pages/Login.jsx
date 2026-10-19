@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import { useAuth } from '../context/AuthContext'
 
 function Login() {
   const [email, setEmail] = useState('')
@@ -7,6 +8,7 @@ function Login() {
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const { setToken, setUser } = useAuth()
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -49,9 +51,10 @@ if (!verifyResponse.ok) {
   throw new Error('Authentication verification failed')
 }
 
-const verifiedUser = await verifyResponse.json()
+await verifyResponse.json()
 
-console.log('Authenticated user:', verifiedUser)
+setToken(data.token)
+setUser(data.user)
 
 navigate('/')
     } catch (error) {

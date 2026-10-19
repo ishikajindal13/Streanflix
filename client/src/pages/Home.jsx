@@ -3,13 +3,14 @@ import '../App.css'
 import MovieCard from '../components/MovieCard'
 import { Link } from 'react-router-dom'
 import LogoutButton from '../components/LogoutButton'
-
+import { useAuth } from '../context/AuthContext'
 
 function App() {
 
   const [search, setSearch] = useState('')
   const [movies, setMovies] = useState([])
   const [error, setError] = useState('')
+  const { token } = useAuth()
 
   useEffect(() => {
   fetch('http://localhost:5000/api/movies')
@@ -40,7 +41,7 @@ function App() {
   <Link to="/my-list">My List</Link>
 </div>
 
-{localStorage.getItem('token') ? (
+{token ? (
   <LogoutButton />
 ) : (
   <Link to="/login" className="login-btn">

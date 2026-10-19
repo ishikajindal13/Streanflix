@@ -10,20 +10,33 @@ import Login from './pages/Login'
 import MyList from './pages/MyList'
 import MovieDetails from './pages/MovieDetails'
 import './App.css'
+import { AuthProvider } from './context/AuthContext'
 
 
 function App() {
   return (
-   <BrowserRouter>
-   <Routes>
-    <Route path="/" element={<Home />} />
-    <Route path="/login" element={<Login />} />
-    <Route path="/my-list" element={<ProtectedRoute><MyList /></ProtectedRoute>} />
-    <Route path="/movie/:id" element={<MovieDetails />} />
-   
-   </Routes>
-   </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
 
+          <Route
+            path="/my-list"
+            element={
+              <ProtectedRoute>
+                <MyList />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/movie/:id"
+            element={<MovieDetails />}
+          />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   )
 }
 
