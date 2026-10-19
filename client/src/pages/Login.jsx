@@ -8,7 +8,7 @@ function Login() {
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
-  const { setToken, setUser } = useAuth()
+  const { login } = useAuth()
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -33,30 +33,9 @@ function Login() {
         throw new Error(data.message || 'Login failed')
       }
 
-localStorage.setItem('token', data.token)
-localStorage.setItem('user', JSON.stringify(data.user))
+     login(data.token, data.user)
 
-const verifyResponse = await fetch(
-  'http://localhost:5000/api/auth/me',
-  {
-    headers: {
-      Authorization: `Bearer ${data.token}`,
-    },
-  }
-)
-
-if (!verifyResponse.ok) {
-  localStorage.removeItem('token')
-  localStorage.removeItem('user')
-  throw new Error('Authentication verification failed')
-}
-
-await verifyResponse.json()
-
-setToken(data.token)
-setUser(data.user)
-
-navigate('/')
+      navigate('/')
     } catch (error) {
       setMessage(error.message || 'Unable to connect to server')
     } finally {
