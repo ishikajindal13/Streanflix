@@ -245,11 +245,28 @@ const token = jwt.sign(
 })
 
 
-app.get('/api/auth/me', authenticateToken, (req, res) => {
-  res.json({
-    message: 'You are authenticated!',
-    userId: req.user.userId,
-  })
+app.get('/api/auth/me', authenticateToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId)
+      .select('-password')
+
+    if (!user) {
+      return res.status(401).json({
+        message: 'User no longer exists',
+      })
+    }
+
+    res.json({
+      user: {
+        id: user._id,
+        email: user.email,
+      },
+    })
+  } catch (error) {
+    res.status(500).json({
+      message: 'Failed to fetch user',
+    })
+  }
 })
 
 
