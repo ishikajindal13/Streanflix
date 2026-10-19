@@ -9,6 +9,7 @@ function App() {
 
   const [search, setSearch] = useState('')
   const [movies, setMovies] = useState([])
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const { token } = useAuth()
 
@@ -24,6 +25,9 @@ function App() {
     .catch(() => {
       setError('Could not load movies. Is the backend running?')
     })
+    .finally(() => {
+  setLoading(false)
+})
 }, [])
 
   const filteredMovies = movies.filter((movie) =>
@@ -74,14 +78,23 @@ function App() {
     onChange={(event) => setSearch(event.target.value)}
   />
 </div>
+{loading && <p>Loading movies...</p>}
 {error && <p>{error}</p>}
       <section className="movies-section">
         <h2>Popular on StreamFlix</h2>
 
         <div className="movie-list">
-          {filteredMovies.map((movie) => (
-            <MovieCard key={movie.id} title={movie.title} poster={movie.poster} />
-          ))}
+          {filteredMovies.length > 0 ? (
+  filteredMovies.map((movie) => (
+    <MovieCard
+      key={movie._id}
+      title={movie.title}
+      poster={movie.poster}
+    />
+  ))
+) : (
+  !loading && !error && <p>No movies found.</p>
+)}
         </div>
       </section>
     </div>
