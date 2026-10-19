@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 function ProtectedRoute({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(null)
+  const { token } = useAuth()
 
   useEffect(() => {
     async function verifyToken() {
-      const token = localStorage.getItem('token')
 
       if (!token) {
         setIsAuthenticated(false)
@@ -38,7 +39,7 @@ function ProtectedRoute({ children }) {
     }
 
     verifyToken()
-  }, [])
+  }, [token])
 
   if (isAuthenticated === null) {
     return <p>Checking authentication...</p>
