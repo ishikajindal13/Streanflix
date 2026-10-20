@@ -153,9 +153,16 @@ button {
   object-fit: cover;
 }
 
+.movie-card p {
+  margin: 6px 10px;
+  font-size: 13px;
+  color: #cccccc;
+  line-height: 1.4;
+}
+
 .movie-card h3 {
-  padding: 0 10px;
-  font-size: 15px;
+  margin: 10px;
+  color: white;
 }
 
 .movie-card:hover {

@@ -86,11 +86,15 @@ function App() {
         <div className="movie-list">
           {filteredMovies.length > 0 ? (
   filteredMovies.map((movie) => (
-    <MovieCard
-      key={movie._id}
-      title={movie.title}
-      poster={movie.poster}
-    />
+<MovieCard
+  key={movie._id}
+  title={movie.title}
+  poster={movie.poster}
+  genre={movie.genre}
+  year={movie.year}
+  rating={movie.rating}
+  description={movie.description}
+/>
   ))
 ) : (
   !loading && !error && <p>No movies found.</p>
