@@ -83,11 +83,13 @@ function App() {
       <section className="movies-section">
         <h2>Popular on StreamFlix</h2>
 
-        <div className="movie-list">
+        <div className="movie-list"
+        onClick={() => navigate(`/movie/${id}`)}>
           {filteredMovies.length > 0 ? (
   filteredMovies.map((movie) => (
 <MovieCard
   key={movie._id}
+  id={movie._id}
   title={movie.title}
   poster={movie.poster}
   genre={movie.genre}
