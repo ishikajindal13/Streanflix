@@ -6,6 +6,7 @@ const cors = require('cors')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
+const mongoose = require('mongoose')
 require('dotenv').config()
 
 const connectDB = require('./db')
@@ -265,6 +266,72 @@ app.get('/api/auth/me', authenticateToken, async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: 'Failed to fetch user',
+    })
+  }
+})
+
+
+app.post('/api/my-list/:movieId', authenticateToken, async (req, res) => {
+  try {
+    const { movieId } = req.params
+
+    // Check whether the movie ID is valid
+    if (!mongoose.Types.ObjectId.isValid(movieId)) {
+      return res.status(400).json({
+        message: 'Invalid movie ID',
+      })
+    }
+
+    // Check whether the movie exists
+    const movie = await Movie.findById(movieId)
+
+    if (!movie) {
+      return res.status(404).json({
+        message: 'Movie not found',
+      })
+    }
+
+    // Add the movie to this user's list only once
+    const user = await User.findByIdAndUpdate(
+      req.user.userId,
+      { $addToSet: { myList: movieId } },
+      { new: true }
+    ).select('-password')
+
+    if (!user) {
+      return res.status(404).json({
+        message: 'User not found',
+      })
+    }
+
+    res.json({
+      message: 'Movie added to My List',
+      myList: user.myList,
+    })
+  } catch (error) {
+    res.status(500).json({
+      message: 'Failed to add movie to My List',
+    })
+  }
+})
+
+
+app.get('/api/my-list', authenticateToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId)
+      .populate('myList')
+      .select('-password')
+
+    if (!user) {
+      return res.status(404).json({
+        message: 'User not found',
+      })
+    }
+
+    res.json(user.myList)
+  } catch (error) {
+    res.status(500).json({
+      message: 'Failed to fetch My List',
     })
   }
 })

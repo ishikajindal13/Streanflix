@@ -13,6 +13,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+    myList: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Movie',
+  }],
 })
 
 module.exports = mongoose.model('User', userSchema)

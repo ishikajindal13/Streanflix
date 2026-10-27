@@ -1,8 +1,33 @@
 
 import { useAuth } from '../context/AuthContext'
+import { useEffect, useState } from 'react'
 
 function MyList() {
-  const { user } = useAuth()
+    const { user, token } = useAuth()
+  const [movies, setMovies] = useState([])
+
+  
+useEffect(() => {
+  if (!token) return
+
+  fetch('http://localhost:5000/api/my-list', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch My List')
+      }
+      return response.json()
+    })
+    .then((data) => {
+      setMovies(data)
+    })
+    .catch((error) => {
+      console.error(error)
+    })
+}, [token])
 
   return (
     <div className="login-page">
@@ -10,7 +35,23 @@ function MyList() {
 
       {user && <p>Logged in as: {user.email}</p>}
 
-      <p>Your saved movies will appear here.</p>
+      
+{movies.length === 0 ? (
+  <p>Your list is empty. Add some movies!</p>
+) : (
+  <div className="movie-list">
+    {movies.map((movie) => (
+      <div className="movie-card" key={movie._id}>
+        <img src={movie.poster} alt={movie.title} />
+        <h3>{movie.title}</h3>
+        <p>Genre: {movie.genre || 'Unknown'}</p>
+        <p>Year: {movie.year || 'N/A'}</p>
+        <p>Rating: {movie.rating ? `⭐ ${movie.rating}/10` : 'Not rated'}</p>
+      </div>
+    ))}
+  </div>
+)}
+
     </div>
   )
 }
