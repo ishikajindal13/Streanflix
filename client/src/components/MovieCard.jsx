@@ -41,7 +41,11 @@ function MovieCard({ id, title, poster, genre, year, rating, description }) {
         throw new Error(data.message || 'Failed to add movie')
       }
 
-      alert('Movie added to My List!')
+      if (data.alreadyAdded) {
+  alert('Movie is already in My List!')
+} else {
+  alert('Movie added to My List!')
+}
     } catch (error) {
       alert(error.message)
     }

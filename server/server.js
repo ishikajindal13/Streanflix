@@ -275,14 +275,14 @@ app.post('/api/my-list/:movieId', authenticateToken, async (req, res) => {
   try {
     const { movieId } = req.params
 
-    // Check whether the movie ID is valid
+    // Step 1: Validate the movie ID
     if (!mongoose.Types.ObjectId.isValid(movieId)) {
       return res.status(400).json({
         message: 'Invalid movie ID',
       })
     }
 
-    // Check whether the movie exists
+    // Step 2: Check whether the movie exists
     const movie = await Movie.findById(movieId)
 
     if (!movie) {
@@ -291,12 +291,8 @@ app.post('/api/my-list/:movieId', authenticateToken, async (req, res) => {
       })
     }
 
-    // Add the movie to this user's list only once
-    const user = await User.findByIdAndUpdate(
-      req.user.userId,
-      { $addToSet: { myList: movieId } },
-      { new: true }
-    ).select('-password')
+    // Step 3: Find the logged-in user
+    const user = await User.findById(req.user.userId)
 
     if (!user) {
       return res.status(404).json({
@@ -304,11 +300,31 @@ app.post('/api/my-list/:movieId', authenticateToken, async (req, res) => {
       })
     }
 
+    // Step 4: Check whether the movie is already saved
+    const alreadyAdded = user.myList.some(
+      (savedMovieId) => savedMovieId.toString() === movieId
+    )
+
+    if (alreadyAdded) {
+      return res.json({
+        message: 'Movie is already in My List',
+        alreadyAdded: true,
+      })
+    }
+
+    // Step 5: Add the movie to My List
+    user.myList.push(movieId)
+    await user.save()
+
+    // Step 6: Send the success response
     res.json({
       message: 'Movie added to My List',
+      alreadyAdded: false,
       myList: user.myList,
     })
   } catch (error) {
+    console.error('Add to My List error:', error)
+
     res.status(500).json({
       message: 'Failed to add movie to My List',
     })
