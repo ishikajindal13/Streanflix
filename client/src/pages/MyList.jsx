@@ -47,6 +47,39 @@ useEffect(() => {
         <p>Genre: {movie.genre || 'Unknown'}</p>
         <p>Year: {movie.year || 'N/A'}</p>
         <p>Rating: {movie.rating ? `⭐ ${movie.rating}/10` : 'Not rated'}</p>
+        
+<button
+  onClick={async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/my-list/${movie._id}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to remove movie')
+      }
+
+      setMovies((currentMovies) =>
+        currentMovies.filter((item) => item._id !== movie._id)
+      )
+
+      alert('Movie removed from My List!')
+    } catch (error) {
+      alert(error.message)
+    }
+  }}
+>
+  Remove from My List
+</button>
+
       </div>
     ))}
   </div>

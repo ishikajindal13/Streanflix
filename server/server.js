@@ -337,6 +337,40 @@ app.get('/api/my-list', authenticateToken, async (req, res) => {
 })
 
 
+app.delete('/api/my-list/:movieId', authenticateToken, async (req, res) => {
+  try {
+    const { movieId } = req.params
+
+    if (!mongoose.Types.ObjectId.isValid(movieId)) {
+      return res.status(400).json({
+        message: 'Invalid movie ID',
+      })
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.user.userId,
+      { $pull: { myList: movieId } },
+      { new: true }
+    ).select('-password')
+
+    if (!user) {
+      return res.status(404).json({
+        message: 'User not found',
+      })
+    }
+
+    res.json({
+      message: 'Movie removed from My List',
+      myList: user.myList,
+    })
+  } catch (error) {
+    res.status(500).json({
+      message: 'Failed to remove movie from My List',
+    })
+  }
+})
+
+
 // Start server
 async function startServer() {
   await connectDB()
