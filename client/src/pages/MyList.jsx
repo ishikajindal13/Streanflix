@@ -5,10 +5,15 @@ import { useEffect, useState } from 'react'
 function MyList() {
     const { user, token } = useAuth()
   const [movies, setMovies] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   
 useEffect(() => {
-  if (!token) return
+  if (!token) {
+    setLoading(false)
+    return
+  }
 
   fetch('http://localhost:5000/api/my-list', {
     headers: {
@@ -26,60 +31,76 @@ useEffect(() => {
     })
     .catch((error) => {
       console.error(error)
+      setError('Failed to fetch My List. Please try again.')
+    })
+    .finally(() => {
+      setLoading(false)
     })
 }, [token])
-
   return (
     <div className="login-page">
       <h1>My List</h1>
-
       {user && <p>Logged in as: {user.email}</p>}
 
+
+
+
       
-{movies.length === 0 ? (
+
+{loading ? (
+  <p>Loading My List...</p>
+) : error ? (
+  <p className="error-message">{error}</p>
+) : movies.length === 0 ? (
   <p>Your list is empty. Add some movies!</p>
 ) : (
   <div className="movie-list">
     {movies.map((movie) => (
       <div className="movie-card" key={movie._id}>
         <img src={movie.poster} alt={movie.title} />
+
         <h3>{movie.title}</h3>
         <p>Genre: {movie.genre || 'Unknown'}</p>
         <p>Year: {movie.year || 'N/A'}</p>
-        <p>Rating: {movie.rating ? `⭐ ${movie.rating}/10` : 'Not rated'}</p>
-        
-<button
-  onClick={async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:5000/api/my-list/${movie._id}`,
-        {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
+        <p>
+          Rating: {movie.rating ? `⭐ ${movie.rating}/10` : 'Not rated'}
+        </p>
 
-      const data = await response.json()
+        <button
+          onClick={async () => {
+            try {
+              const response = await fetch(
+                `http://localhost:5000/api/my-list/${movie._id}`,
+                {
+                  method: 'DELETE',
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              )
 
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to remove movie')
-      }
+              const data = await response.json()
 
-      setMovies((currentMovies) =>
-        currentMovies.filter((item) => item._id !== movie._id)
-      )
+              if (!response.ok) {
+                throw new Error(
+                  data.message || 'Failed to remove movie'
+                )
+              }
 
-      alert('Movie removed from My List!')
-    } catch (error) {
-      alert(error.message)
-    }
-  }}
->
-  Remove from My List
-</button>
+              setMovies((currentMovies) =>
+                currentMovies.filter(
+                  (item) => item._id !== movie._id
+                )
+              )
 
+              alert('Movie removed from My List!')
+            } catch (error) {
+              alert(error.message)
+            }
+          }}
+        >
+          Remove from My List
+        </button>
       </div>
     ))}
   </div>
