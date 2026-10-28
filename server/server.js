@@ -80,6 +80,34 @@ app.get('/api/movies/:id', async (req, res) => {
 
 app.post('/api/movies', async (req, res) => {
   try {
+
+    if (!req.body.title || !req.body.title.trim()) {
+  return res.status(400).json({
+    message: 'Movie title is required',
+  })
+}
+
+if (!req.body.poster || !req.body.poster.trim()) {
+  return res.status(400).json({
+    message: 'Movie poster is required',
+  })
+}
+
+if (!req.body.genre || !req.body.genre.trim()) {
+  return res.status(400).json({
+    message: 'Movie genre is required',
+  })
+}
+if (
+  req.body.year === undefined ||
+  req.body.year === null ||
+  !Number.isInteger(Number(req.body.year)) ||
+  Number(req.body.year) < 1888
+) {
+  return res.status(400).json({
+    message: 'A valid movie year is required',
+  })
+}
     const movie = await Movie.create(req.body)
 
     res.status(201).json(movie)
