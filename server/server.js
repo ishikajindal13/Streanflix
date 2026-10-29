@@ -33,7 +33,7 @@ function authenticateToken(req, res, next) {
   // Verify the token
   jwt.verify(token, process.env.JWT_SECRET, (error, user) => {
     if (error) {
-      return res.status(403).json({
+      return res.status(401).json({
         message: 'Invalid or expired token',
       })
     }
@@ -256,7 +256,7 @@ app.post('/api/auth/login', async (req, res) => {
 const token = jwt.sign(
   { userId: user._id },
   process.env.JWT_SECRET,
-  { expiresIn: '10s' }
+  { expiresIn: '1h' }
 )
     res.json({
       message: 'Login successful',

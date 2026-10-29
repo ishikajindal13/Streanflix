@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext'
 import { useEffect, useState } from 'react'
 
 function MyList() {
-    const { user, token } = useAuth()
+    const { user, token , logout } = useAuth()
   const [movies, setMovies] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -21,14 +21,23 @@ useEffect(() => {
     },
   })
     .then((response) => {
-      if (!response.ok) {
-        throw new Error('Failed to fetch My List')
-      }
-      return response.json()
-    })
-    .then((data) => {
-      setMovies(data)
-    })
+  if (response.status === 401) {
+    logout()
+    return null
+  }
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch My List')
+  }
+
+  return response.json()
+})
+.then((data) => {
+  if (data) {
+    setMovies(data)
+  }
+})
+ 
     .catch((error) => {
       console.error(error)
       setError('Failed to fetch My List. Please try again.')
@@ -36,7 +45,7 @@ useEffect(() => {
     .finally(() => {
       setLoading(false)
     })
-}, [token])
+}, [token,logout])
   return (
     <div className="login-page">
       <h1>My List</h1>
@@ -79,6 +88,10 @@ useEffect(() => {
                 }
               )
 
+              if (response.status === 401) {
+                  logout()
+                   return
+                  }
               const data = await response.json()
 
               if (!response.ok) {
