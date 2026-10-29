@@ -50,8 +50,40 @@ function authenticateToken(req, res, next) {
 
 app.get('/api/movies', async (req, res) => {
   try {
-    const movies = await Movie.find()
-    res.json(movies)
+const page = Math.max(1, Number(req.query.page) || 1)
+
+const limit = Math.min(
+  50,
+  Math.max(1, Number(req.query.limit) || 10)
+)
+
+const skip = (page - 1) * limit
+const filter = {}
+
+if (req.query.genre) {
+  filter.genre = req.query.genre
+}
+const totalMovies = await Movie.countDocuments(filter)
+const totalPages = Math.ceil(totalMovies / limit)
+const sortBy = req.query.sortBy
+const order = req.query.order === 'asc' ? 1 : -1
+
+const sort = {}
+
+if (sortBy === 'rating' || sortBy === 'year') {
+  sort[sortBy] = order
+}
+
+const movies = await Movie.find(filter)
+  .sort(sort)
+  .skip(skip)
+  .limit(limit)
+    res.json({
+  movies,
+  totalMovies,
+  totalPages,
+  currentPage: page,
+})
   } catch (error) {
     res.status(500).json({
       message: 'Failed to fetch movies',

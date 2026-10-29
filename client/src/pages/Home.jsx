@@ -9,26 +9,32 @@ function App() {
 
   const [search, setSearch] = useState('')
   const [movies, setMovies] = useState([])
+  const [currentPage, setCurrentPage] = useState(1)
+const [totalPages, setTotalPages] = useState(1)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const { token } = useAuth()
 
   useEffect(() => {
-  fetch('http://localhost:5000/api/movies')
+  fetch(`http://localhost:5000/api/movies?page=${currentPage}&limit=10`)
     .then((response) => {
       if (!response.ok) {
         throw new Error('Could not load movies')
       }
       return response.json()
     })
-    .then((data) => setMovies(data))
+    .then((data) => {
+  setMovies(data.movies)
+  setCurrentPage(data.currentPage)
+  setTotalPages(data.totalPages)
+})
     .catch(() => {
       setError('Could not load movies. Is the backend running?')
     })
     .finally(() => {
   setLoading(false)
 })
-}, [])
+}, [currentPage])
 
   const filteredMovies = movies.filter((movie) =>
   movie.title.toLowerCase().includes(search.toLowerCase())
@@ -103,6 +109,26 @@ function App() {
 )}
         </div>
       </section>
+
+      <div className="pagination">
+        <button
+          onClick={() => setCurrentPage(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </button>
+
+        <span>
+          Page {currentPage} of {totalPages}
+        </span>
+
+        <button
+          onClick={() => setCurrentPage(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </button>
+      </div>
     </div>
   )
 }
