@@ -9,7 +9,7 @@ const [error, setError] = useState('')
   const { id } = useParams()
 
   useEffect(() => {
-  fetch(`http://localhost:5000/api/movies/${id}`)
+  fetch(`${import.meta.env.VITE_API_URL}/api/movies/${id}`)
     .then((res) => {
       if (!res.ok) {
         throw new Error('Movie not found')

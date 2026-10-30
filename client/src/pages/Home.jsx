@@ -4,6 +4,7 @@ import MovieCard from '../components/MovieCard'
 import { Link } from 'react-router-dom'
 import LogoutButton from '../components/LogoutButton'
 import { useAuth } from '../context/AuthContext'
+import.meta.env.VITE_API_URL
 
 function App() {
 
@@ -16,7 +17,7 @@ const [totalPages, setTotalPages] = useState(1)
   const { token } = useAuth()
 
   useEffect(() => {
-  fetch(`http://localhost:5000/api/movies?page=${currentPage}&limit=10`)
+  fetch(`${import.meta.env.VITE_API_URL}/api/movies?page=${currentPage}&limit=5`)
     .then((response) => {
       if (!response.ok) {
         throw new Error('Could not load movies')

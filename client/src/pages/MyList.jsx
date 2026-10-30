@@ -15,7 +15,7 @@ useEffect(() => {
     return
   }
 
-  fetch('http://localhost:5000/api/my-list', {
+  fetch(`${import.meta.env.VITE_API_URL}/api/my-list`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -79,7 +79,7 @@ useEffect(() => {
           onClick={async () => {
             try {
               const response = await fetch(
-                `http://localhost:5000/api/my-list/${movie._id}`,
+                `${import.meta.env.VITE_API_URL}/api/my-list/${movie._id}`,
                 {
                   method: 'DELETE',
                   headers: {

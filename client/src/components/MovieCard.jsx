@@ -26,7 +26,7 @@ function MovieCard({ id, title, poster, genre, year, rating, description }) {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/my-list/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/my-list/${id}`,
         {
           method: 'POST',
           headers: {
